@@ -97,11 +97,10 @@ The Maniac Framework is a lightweight, PHP-based web framework designed for rapi
 ```
 maniac-framework/
 ├── app/
-│   ├── database/
-│   │   ├── migrations/
-│   │   ├── seeders/
 │   ├── Http/
+│   │   ├── Controllers/
 │   ├── Mail/
+│   ├── Middlewares/
 │   ├── Models/
 │   ├── Notifications/
 ├── config/
@@ -115,6 +114,9 @@ maniac-framework/
 │   ├── Mvc/
 │   ├── Notifications/
 │   ├── View/
+├── database/
+│   ├── migrations/
+│   ├── seeders/
 ├── public/
 ├── resources/
 │   ├── views/
