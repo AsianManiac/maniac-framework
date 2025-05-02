@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Maniac Framework CLI Tool
+ *
+ * This script is the entry point for the Maniac Framework's command-line interface.
+ * It initializes the application and delegates command execution to the ConsoleKernel.
+ *
+ * Usage: php maniac <command> [options] [arguments]
+ */
+
+define('BASE_PATH', __DIR__);
+
+// Load autoloader
+require BASE_PATH . '/vendor/autoload.php';
+
+// Load environment variables
+if (class_exists(\Dotenv\Dotenv::class)) {
+    try {
+        $dotenv = \Dotenv\Dotenv::createImmutable(BASE_PATH);
+        $dotenv->load();
+    } catch (\Throwable $e) {
+        // Silently ignore if .env is missing
+    }
+}
+
+// Bootstrap the application
+$app = require BASE_PATH . '/bootstrap/app.php';
+
+// Handle the command
+$kernel = new \Core\App\Console\Kernel($app);
+$status = $kernel->handle($_SERVER['argv']);
+exit($status);
