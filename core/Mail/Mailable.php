@@ -2,6 +2,7 @@
 
 namespace Core\Mail;
 
+use Exception;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
 
@@ -20,6 +21,7 @@ abstract class Mailable
     public array $attachments = [];
     public array $rawAttachments = [];
     protected array $contentComponents = [];
+    protected bool $usingComponents = false;
 
     /**
      * Fluent configuration methods.
@@ -77,6 +79,9 @@ abstract class Mailable
 
     public function view(string $viewName, array $data = []): static
     {
+        if ($this->usingComponents) {
+            throw new Exception('Cannot use view() when content components (e.g., greeting, line) are used.');
+        }
         $this->view = $viewName;
         $this->viewData = array_merge($this->viewData, $data);
         return $this;
@@ -84,6 +89,9 @@ abstract class Mailable
 
     public function markdown(string $viewName, array $data = []): static
     {
+        if ($this->usingComponents) {
+            throw new Exception('Cannot use markdown() when content components (e.g., greeting, line) are used.');
+        }
         $this->markdown = $viewName;
         $this->viewData = array_merge($this->viewData, $data);
         return $this;
@@ -162,6 +170,23 @@ abstract class Mailable
     {
         $this->contentComponents[] = ['type' => 'footer', 'value' => $footer];
         return $this;
+    }
+
+    /**
+     * Convert mailable data to array for template rendering.
+     */
+    public function toArray(): array
+    {
+        return [
+            'subject' => $this->subject,
+            'to' => array_map(fn($addr) => $addr->toString(), $this->to),
+            'cc' => array_map(fn($addr) => $addr->toString(), $this->cc),
+            'bcc' => array_map(fn($addr) => $addr->toString(), $this->bcc),
+            'replyTo' => array_map(fn($addr) => $addr->toString(), $this->replyTo),
+            'from' => $this->from ? $this->from->toString() : null,
+            'components' => $this->contentComponents,
+            'data' => $this->viewData,
+        ];
     }
 
     /**

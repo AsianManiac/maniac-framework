@@ -2,9 +2,9 @@
 
 namespace Core\Foundation;
 
-use Mockery;
 use RuntimeException;
 use Core\Foundation\App;
+use Core\Logging\Log;
 
 /**
  * Provides a static proxy to objects bound in the service container (App registry).
@@ -13,23 +13,22 @@ abstract class Facade
 {
     /**
      * The application instance being facaded.
-     * We use our simple App registry here.
-     * @var App|null // Or your ContainerInterface if you adopt one
+     *
+     * @var App|null
      */
-    protected static ?App $app = null; // Can be set during bootstrap
+    protected static ?App $app = null;
 
     /**
      * The resolved object instances.
-     * Cache resolved instances for performance.
+     *
      * @var array<string, object>
      */
     protected static array $resolvedInstance = [];
 
     /**
      * Set the application instance used by the facade.
-     * Call this during bootstrap.
      *
-     * @param App $app // Or your ContainerInterface
+     * @param App $app
      * @return void
      */
     public static function setFacadeApplication(App $app): void
@@ -40,31 +39,24 @@ abstract class Facade
     /**
      * Get the application instance used by the facade.
      *
-     * @return App // Or your ContainerInterface
+     * @return App
      * @throws RuntimeException
      */
     protected static function getFacadeApplication(): App
     {
         if (!static::$app) {
-            // Attempt to resolve App if not explicitly set (basic fallback)
-            // This assumes App itself is somehow globally accessible or resolvable
-            // It's better to explicitly call setFacadeApplication in bootstrap.
-            if (class_exists(App::class) && method_exists(App::class, 'getInstance')) {
-                static::$app = App::getInstance(); // Hypothetical getInstance method
-            }
-            if (!static::$app) {
-                throw new RuntimeException('Facade application instance has not been set.');
-            }
+            $message = 'Facade application instance has not been set. Ensure Facade::setFacadeApplication() is called during bootstrap.';
+            Log::error($message);
+            throw new RuntimeException($message);
         }
         return static::$app;
     }
 
     /**
      * Get the registered name (key) of the component in the container.
-     * Each concrete facade MUST implement this method.
      *
-     * @return string The key used with App::bind() / App::resolve()
-     * @throws \RuntimeException
+     * @return string
+     * @throws RuntimeException
      */
     protected static function getFacadeAccessor(): string
     {
@@ -86,11 +78,11 @@ abstract class Facade
         $app = static::getFacadeApplication();
 
         try {
-            // Use the container (App registry) to resolve the instance
-            $instance = $app::resolve($name); // Assuming App::resolve is static
+            $instance = $app::resolve($name);
             static::$resolvedInstance[$name] = $instance;
             return $instance;
         } catch (\Throwable $e) {
+            Log::error("Could not resolve facade instance for [{$name}]: " . $e->getMessage(), ['exception' => $e]);
             throw new RuntimeException("Could not resolve facade instance for [{$name}]: " . $e->getMessage(), 0, $e);
         }
     }
@@ -122,7 +114,7 @@ abstract class Facade
      * @param string $method The method being called.
      * @param array $args The arguments passed to the method.
      * @return mixed The result of the method call.
-     * @throws \RuntimeException If the facade root cannot be resolved or method doesn't exist.
+     * @throws RuntimeException
      */
     public static function __callStatic(string $method, array $args): mixed
     {
@@ -130,20 +122,22 @@ abstract class Facade
         $instance = static::resolveFacadeInstance($accessor);
 
         if (!$instance) {
-            throw new RuntimeException("A facade root has not been set for '{$accessor}'.");
+            $message = "A facade root has not been set for '{$accessor}'.";
+            Log::error($message);
+            throw new RuntimeException($message);
         }
 
-        // Check if method exists on the resolved instance
         if (!method_exists($instance, $method)) {
-            throw new RuntimeException(sprintf(
+            $message = sprintf(
                 'Call to undefined method %s::%s() on facade %s',
                 get_class($instance),
                 $method,
-                static::class // Added facade class name for clarity
-            ));
+                static::class
+            );
+            Log::error($message);
+            throw new RuntimeException($message);
         }
 
-        // Forward the call to the resolved instance
         return $instance->{$method}(...$args);
     }
 }

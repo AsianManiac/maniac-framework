@@ -2,20 +2,21 @@
 
 namespace App\Mail;
 
-use App\Models\User;
 use Core\Mail\Mailable;
-use Core\Contracts\Queue\ShouldQueue;
 
-class WelcomeEmail extends Mailable implements ShouldQueue
+/**
+ * Welcome email mailable.
+ */
+class WelcomeEmail extends Mailable
 {
-    public User $user;
+    protected $user;
 
     /**
      * Create a new message instance.
      *
-     * @param User $user
+     * @param object $user
      */
-    public function __construct(User $user)
+    public function __construct(object $user)
     {
         $this->user = $user;
     }
@@ -25,12 +26,10 @@ class WelcomeEmail extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build(): static
+    public function build()
     {
-        return $this->subject('Welcome to Maniac Framework, ' . $this->user->name)
-            // ->from('noreply@maniac.app', 'Maniac NoReply') // Optional override
-            ->markdown('mail.welcome', ['url' => url('/dashboard')]); // Use markdown view
-        // Or ->view('mail.welcome-html')
-        // Or ->text('mail.welcome-text')
+        return $this->subject('Welcome to Maniac Framework')
+            ->markdown('emails.welcome')
+            ->with(['name' => $this->user->name]);
     }
 }

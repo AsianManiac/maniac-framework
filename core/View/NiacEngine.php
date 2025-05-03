@@ -143,13 +143,29 @@ class NiacEngine implements ViewEngineInterface
     }
 
     /**
-     * Resolve view path from dot notation
+     * Resolve view path from dot notation or namespaced view
      *
-     * @param string $viewName View name in dot notation
+     * @param string $viewName View name in dot notation or namespaced (e.g., mail::message)
      * @return string Full path to view file
      */
     protected function resolveViewPath(string $viewName): string
     {
+        // Handle namespaced views (e.g., mail::message)
+        if (strpos($viewName, '::') !== false) {
+            [$namespace, $view] = explode('::', $viewName);
+            if ($namespace === 'mail') {
+                $mailPaths = config('mail.markdown.paths', []);
+                foreach ($mailPaths as $path) {
+                    $filePath = rtrim($path, '/\\') . DIRECTORY_SEPARATOR . str_replace('.', DIRECTORY_SEPARATOR, $view) . '.niac.php';
+                    if (file_exists($filePath)) {
+                        return $filePath;
+                    }
+                }
+            }
+            // Fallback to default views path if not found
+            $viewName = $namespace . '/' . $view;
+        }
+
         return $this->viewsPath . DIRECTORY_SEPARATOR . str_replace('.', DIRECTORY_SEPARATOR, $viewName) . '.niac.php';
     }
 
@@ -187,7 +203,7 @@ class NiacEngine implements ViewEngineInterface
      */
     protected function compile(string $viewPath, string $compiledPath, bool $isLayout = false): void
     {
-        $content = file_get_contents($viewPath);
+        $content = file_get_contents(str_replace('/', '\\', $viewPath));
         if ($content === false) {
             throw new Exception("Cannot read view: {$viewPath}");
         }

@@ -19,13 +19,22 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'name' => $this->fake('name'),
-                'email' => $this->fake('email'),
+                'email' => 'user13@example.com',
                 'password' => $this->fake('password'),
                 'is_active' => $this->fake('boolean'),
                 'email_verified_at' => $this->fake('datetime'),
-                // 'created_at' => now(),
-                // 'updated_at' => now(),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
             ],
+            // [
+            //     'name' => $this->fake('name'),
+            //     'email' => $this->fake('email'),
+            //     'password' => $this->fake('password'),
+            //     'is_active' => $this->fake('boolean'),
+            //     'email_verified_at' => $this->fake('datetime'),
+            //     'created_at' => date('Y-m-d H:i:s'),
+            //     'updated_at' => date('Y-m-d H:i:s'),
+            // ],
         ];
 
         $this->insertMany('users', $users);

@@ -11,10 +11,12 @@ use Core\App\Console\Commands\MigrateCommand;
 use Core\App\Console\Commands\MakeModelCommand;
 use Core\App\Console\Commands\MakeSeederCommand;
 use Core\App\Console\Commands\KeyGenerateCommand;
+use Core\App\Console\Commands\MakeMailableCommand;
 use Core\App\Console\Commands\MakeMigrationCommand;
 use Core\App\Console\Commands\MakeControllerCommand;
 use Core\App\Console\Commands\MakeMiddlewareCommand;
 use Core\App\Console\Commands\MigrateRollbackCommand;
+use Core\App\Console\Commands\MakeNotificationCommand;
 
 /**
  * The Console Kernel for the Maniac Framework.
@@ -49,6 +51,8 @@ class Kernel
         KeyGenerateCommand::class,
         MakeMigrationCommand::class,
         MakeModelCommand::class,
+        MakeMailableCommand::class,
+        MakeNotificationCommand::class,
         MakeControllerCommand::class,
         MakeMiddlewareCommand::class,
         MigrateCommand::class,

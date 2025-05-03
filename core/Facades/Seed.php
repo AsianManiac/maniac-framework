@@ -3,7 +3,7 @@
 namespace Core\Facades;
 
 use Core\Foundation\Facade;
-use Core\Database\Seeders\DatabaseSeeder;
+use Database\Seeders\DatabaseSeeder;
 
 /**
  * Facade for database seeding operations.

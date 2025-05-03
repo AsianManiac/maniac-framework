@@ -1,6 +1,7 @@
 <?php
 
 use Core\Support\Collection;
+use Core\Support\Date;
 
 if (!function_exists('collect')) {
     /**
@@ -55,5 +56,17 @@ if (!function_exists('data_get')) {
             }
         }
         return $target; // Final value
+    }
+}
+
+if (!function_exists('now')) {
+    /**
+     * Get the current date and time.
+     *
+     * @return \Core\Support\Date
+     */
+    function now(): Date
+    {
+        return Date::now();
     }
 }

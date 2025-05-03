@@ -121,14 +121,21 @@ abstract class Seeder
     }
 
     /**
-     * Call another seeder.
+     * Call another seeder or multiple seeders.
      *
-     * @param string $seeder
+     * @param string|array $seeders
      * @return void
+     * @throws \Exception
      */
-    protected function call(string $seeder): void
+    protected function call(string|array $seeders): void
     {
-        $seederInstance = new $seeder();
-        $seederInstance->run();
+        $seeders = is_array($seeders) ? $seeders : [$seeders];
+        foreach ($seeders as $seeder) {
+            if (!class_exists($seeder)) {
+                throw new \Exception("Seeder class {$seeder} not found.");
+            }
+            $seederInstance = new $seeder();
+            $seederInstance->run();
+        }
     }
 }

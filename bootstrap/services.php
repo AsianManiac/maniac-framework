@@ -1,5 +1,4 @@
 <?php
-// bootstrap/services.php
 
 /**
  * Bind core services to the Maniac Framework application container.
@@ -7,8 +6,11 @@
 
 use Core\Http\Request;
 use Core\Foundation\App;
+use Core\Support\Date;
+use Core\Mail\Mailer;
 use Core\View\NiacEngine;
 use Core\Encryption\Encrypter;
+use Core\Notifications\NotificationSender;
 use Core\View\ViewEngineInterface;
 use Core\Http\Response\ResponseFactory;
 use Core\Http\Response\ResponseFactoryInterface;
@@ -32,6 +34,28 @@ App::bind('db', function () use ($basePath) {
     $config = require $basePath . '/config/database.php';
     DB::init($config);
     return DB::getInstance();
+});
+
+/**
+ * Bind Date.
+ */
+App::bind(Date::class, function () {
+    return new Date();
+});
+
+/**
+ * Bind Mailer.
+ */
+App::bind(Mailer::class, function () use ($basePath) {
+    $config = require $basePath . '/config/mail.php';
+    return new Mailer($config, app(ViewEngineInterface::class));
+});
+
+/**
+ * Bind NotificationSender.
+ */
+App::bind(NotificationSender::class, function () {
+    return new NotificationSender();
 });
 
 /**

@@ -58,10 +58,14 @@ class DB
     public static function init(array $config): void
     {
         self::$config = $config;
-        $default = $config['default'];
+        $default = $config['default'] ?? 'mysql';
         $connectionConfig = $config['connections'][$default] ?? null;
 
-        if ($connectionConfig && $connectionConfig['driver'] === 'mysql') {
+        if (!$connectionConfig) {
+            throw new Exception("No configuration found for connection: {$default}");
+        }
+
+        if ($connectionConfig['driver'] === 'mysql') {
             try {
                 $dsn = "mysql:host={$connectionConfig['host']};port={$connectionConfig['port']};charset={$connectionConfig['charset']}";
                 $pdo = new PDO($dsn, $connectionConfig['username'], $connectionConfig['password'], [
@@ -85,11 +89,15 @@ class DB
     public static function getInstance(): PDO
     {
         if (self::$instance === null) {
+            if (empty(self::$config)) {
+                throw new Exception('Database configuration not initialized. Call DB::init() first.');
+            }
+
             $default = self::$config['default'] ?? 'mysql';
             $config = self::$config['connections'][$default] ?? null;
 
             if (!$config) {
-                throw new Exception('No database configuration found for connection: ' . $default);
+                throw new Exception("No database configuration found for connection: {$default}");
             }
 
             try {
@@ -197,17 +205,26 @@ class DB
         return self::getInstance()->lastInsertId();
     }
 
+    /**
+     * Build DSN for the connection.
+     *
+     * @param array $config
+     * @return string
+     * @throws Exception
+     */
     private static function buildDsn(array $config): string
     {
-        // Basic DSN builder, expand for other drivers (pgsql, sqlite)
         if ($config['driver'] === 'mysql') {
             return "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']};charset={$config['charset']}";
         }
-        // Add other drivers here
         throw new Exception("Unsupported database driver: {$config['driver']}");
     }
 
-    // Convenience method for direct PDO access if needed
+    /**
+     * Direct PDO access.
+     *
+     * @return PDO
+     */
     public static function pdo(): PDO
     {
         return self::getInstance();

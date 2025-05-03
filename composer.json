@@ -21,7 +21,8 @@
   "autoload": {
     "psr-4": {
       "App\\": "app/",
-      "Core\\": "core/"
+      "Core\\": "core/",
+      "Database\\Seeders\\": "database/seeders/"
     },
     "files": [
       "core/Foundation/helpers.php"

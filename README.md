@@ -24,7 +24,7 @@ The Maniac Framework is a lightweight, PHP-based web framework designed for rapi
 1. **Clone the Repository**:
 
    ```bash
-   git clone https://github.com/your-repo/maniac-framework.git
+   git clone https://github.com/AsianManiac/maniac-framework.git
    cd maniac-framework
    ```
 
@@ -43,6 +43,19 @@ The Maniac Framework is a lightweight, PHP-based web framework designed for rapi
    Update `.env` with your database and mail settings:
 
    ```env
+   APP_Name=Maniac
+   APP_KEY=base64:ENiEH7adWPjucVvFGKlaSxM1sz5GAo99RKI5YB5SMbE=
+   APP_CIPHER=AES-256-GCM
+   APP_URL=http://localhost:8000
+   APP_DEBUG=true
+
+   LOG_CHANNEL=file
+   LOG_LEVEL=debug
+
+   SESSION_DRIVER=file
+   SESSION_LIFETIME=120 # 2 hours
+   SESSION_COOKIE=maniac_session
+
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
