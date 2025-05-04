@@ -69,11 +69,6 @@
                                 Start building your application with our comprehensive documentation and examples.
                             </p>
 
-                            @isset($message)
-                            <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <p class="text-blue-800">{{ $message }}</p>
-                            </div>
-                            @endisset
 
                             <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
                                 <a href="/docs" class="flex items-start p-6 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all duration-300">
@@ -103,7 +98,6 @@
         </main>
     </div>
 
-    @include('partials.footer')
 
 </body>
 

@@ -4,32 +4,35 @@ namespace App\Mail;
 
 use Core\Mail\Mailable;
 
-/**
- * Welcome email mailable.
- */
 class WelcomeEmail extends Mailable
 {
     protected $user;
 
-    /**
-     * Create a new message instance.
-     *
-     * @param object $user
-     */
-    public function __construct(object $user)
+    public function __construct($user)
     {
         $this->user = $user;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
-        return $this->subject('Welcome to Maniac Framework')
+        return $this->from('no-reply@example.com', 'Maniac Framework')
+            ->to($this->user->email, $this->user->name)
+            ->subject('Welcome to Maniac Framework!')
             ->markdown('emails.welcome')
-            ->with(['name' => $this->user->name]);
+            ->with([
+                'user' => $this->user,
+                'components' => $this->getContentComponents(),
+            ])
+            ->greeting("Hello {$this->user->name}!")
+            ->line('Welcome to the Maniac Framework!')
+            ->action('Explore Dashboard', url('/dashboard'))
+            ->line('We are excited to have you on board.')
+            ->panel('Your account details: <br>Email: ' . $this->user->email)
+            ->table([
+                ['key' => 'Name', 'value' => $this->user->name],
+                ['key' => 'Email', 'value' => $this->user->email],
+            ], ['key', 'value'])
+            ->signature('The Maniac Team')
+            ->footer('© ' . now()->diffForHumans() . ' Maniac Framework. All rights reserved.');
     }
 }

@@ -1,12 +1,9 @@
-@component('mail::message')
-# Welcome, {{ $name }}!
-
-Thank you for joining the Maniac Framework.
-
-@component('mail::button', ['url' => 'http://localhost:8000'])
-Get Started
-@endcomponent
-
-Best regards,
-The Maniac Team
+<!-- resources/views/emails/welcome.niac.php -->
+@component('vendor.mail.html.themes.modern', ['components' => $components, 'user' => $user ?? null])
+@if(isset($user))
+Your custom content can go here.
+<p>Welcome, {{ $user->name ?? 'Guest' }}!</p>
+@else
+<p>Welcome, Guest!</p>
+@endif
 @endcomponent

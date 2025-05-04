@@ -30,6 +30,6 @@ class WelcomeEmail extends Mailable
                 ['key' => 'Email', 'value' => $this->user->email],
             ], ['key', 'value'])
             ->signature('The Maniac Team')
-            ->footer('© ' . date('Y') . ' Maniac Framework. All rights reserved.');
+            ->footer('© ' . now()->toDateTimeString() . ' Maniac Framework. All rights reserved.');
     }
 }

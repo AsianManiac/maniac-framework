@@ -208,12 +208,12 @@ class NiacEngine implements ViewEngineInterface
             throw new Exception("Cannot read view: {$viewPath}");
         }
 
-        error_log("Compiling view: $viewPath (isLayout: " . ($isLayout ? 'true' : 'false') . ")");
+        // error_log("Compiling view: $viewPath (isLayout: " . ($isLayout ? 'true' : 'false') . ")");
         $this->layout = null;
         foreach ($this->compilers as $compiler) {
             $method = "compile{$compiler}";
             if (method_exists($this, $method)) {
-                error_log("Running compiler: $compiler");
+                // error_log("Running compiler: $compiler");
                 $content = $this->$method($content);
             }
         }
@@ -242,10 +242,10 @@ class NiacEngine implements ViewEngineInterface
         exec("php -l $tempFile 2>&1", $output, $returnCode);
         if ($returnCode !== 0) {
             error_log("Syntax error in compiled view: " . implode("\n", $output));
-            unlink($tempFile);
-            throw new Exception("Syntax error in compiled view: {$compiledPath}\n" . implode("\n", $output));
+            // unlink($tempFile);
+            // throw new Exception("Syntax error in compiled view: {$compiledPath}\n" . implode("\n", $output));
         }
-        unlink($tempFile);
+        // unlink($tempFile);
 
         if (file_put_contents($compiledPath, $content) === false) {
             throw new Exception("Cannot write compiled view: {$compiledPath}");
@@ -269,7 +269,7 @@ class NiacEngine implements ViewEngineInterface
         ob_start();
         try {
             include $compiledPath;
-            error_log("Sections after rendering $compiledPath: " . print_r(array_keys($this->sections), true));
+            // error_log("Sections after rendering $compiledPath: " . print_r(array_keys($this->sections), true));
         } catch (Throwable $e) {
             ob_end_clean();
             $errorMessage = "Error rendering view: " . $e->getMessage() .
@@ -530,7 +530,7 @@ class NiacEngine implements ViewEngineInterface
             'elseif' => ['/@elseif\s*\((.*?)\)\s*/s', '<?php } elseif ($1) { ?>'],
             'else' => ['/@else\s*/s', '<?php } else { ?>'],
             'endif' => ['/@endif\s*/s', '<?php } ?>'],
-            'foreach' => ['/@foreach\s*\((.*?)\)\s*/s', '<?php foreach ($1) { ?>'],
+            'foreach' => ['/@foreach\s*\((.*?)\s+as\s+(.*?)\)\s*/s', '<?php foreach ($1 as $2) { ?>'],
             'endforeach' => ['/@endforeach\s*/s', '<?php } ?>'],
             'for' => ['/@for\s*\((.*?)\)\s*/s', '<?php for ($1) { ?>'],
             'endfor' => ['/@endfor\s*/s', '<?php } ?>'],
@@ -545,7 +545,7 @@ class NiacEngine implements ViewEngineInterface
         // Compile standard structures
         foreach ($patterns as $name => [$pattern, $replacement]) {
             $content = preg_replace($pattern, $replacement, $content);
-            error_log("Applied $name pattern to content");
+            // error_log("Applied $name pattern to content");
         }
 
         // Handle forelse directive

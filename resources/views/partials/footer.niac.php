@@ -27,7 +27,7 @@
 
         <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-500 text-sm mb-4 md:mb-0">
-                Copyright &copy; {{ date('Y') }} {{ config('app.name', 'Maniac Framework') }}. All rights reserved.
+                Copyright &copy; {{ now() }} {{ config('app.name', 'Maniac Framework') }}. All rights reserved.
             </p>
 
             <div class="flex space-x-6">

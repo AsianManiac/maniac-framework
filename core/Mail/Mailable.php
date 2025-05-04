@@ -242,6 +242,6 @@ abstract class Mailable
      */
     public function getContentComponents(): array
     {
-        return $this->contentComponents;
+        return $this->contentComponents ?? [];
     }
 }

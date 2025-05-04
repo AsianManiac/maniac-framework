@@ -1,4 +1,4 @@
-<!-- resources/views/vendor/mail/html/themes/default.niac.php -->
+<!-- resources/views/vendor/mail/html/themes/minimal.niac.php -->
 <!DOCTYPE html>
 <html>
 
@@ -8,58 +8,40 @@
     <title>{{ 'Maniac Framework' }}</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
+            font-family: 'Verdana', sans-serif;
+            line-height: 1.5;
             color: #333;
-            background-color: #f4f4f4;
+            background-color: #fff;
             margin: 0;
-            padding: 0;
+            padding: 20px;
         }
 
         .container {
-            max-width: 600px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            text-align: center;
-            padding: 20px 0;
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 8px 8px 0 0;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
+            max-width: 580px;
+            margin: 0 auto;
         }
 
         .content {
-            padding: 20px;
+            padding: 10px 0;
         }
 
         .action {
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .action a {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
+            padding: 8px 16px;
+            background: #555;
             color: #fff;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         .panel {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-left: 4px solid #007bff;
+            padding: 10px;
+            border: 1px solid #ddd;
             margin: 10px 0;
         }
 
@@ -72,28 +54,25 @@
         .table th,
         .table td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 6px;
             text-align: left;
         }
 
         .table th {
-            background-color: #f4f4f4;
+            background: #f5f5f5;
         }
 
         .footer {
             text-align: center;
-            font-size: 12px;
-            color: #777;
-            padding: 20px 0;
+            font-size: 11px;
+            color: #999;
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="header">
-            <h1>{{ $mailer->getTitle('Maniac Framework') }}</h1>
-        </div>
         <div class="content">
             @foreach($components as $component)
             @if($component['type'] === 'greeting')
